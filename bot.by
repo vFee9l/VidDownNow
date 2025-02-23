@@ -1,0 +1,38 @@
+from pyrogram import Client, filters
+import yt_dlp
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get API credentials from environment variables
+api_id = int(os.getenv("API_ID"))
+api_hash = os.getenv("API_HASH")
+bot_token = os.getenv("BOT_TOKEN")
+
+# File paths
+activation_keys_file = "activationkeys.txt"
+activated_users_file = "activated_users.txt"
+
+# Initialize bot
+app = Client("video_downloader_bot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
+
+# Function to check if a user is activated
+def is_user_activated(user_id):
+    if not os.path.exists(activated_users_file):
+        return False
+    with open(activated_users_file, "r") as f:
+        activated_users = f.read().splitlines()
+    return str(user_id) in activated_users
+
+# Function to activate a user
+def activate_user(user_id):
+    with open(activated_users_file, "a") as f:
+        f.write(f"{user_id}\n")
+
+# Function to check if activation key is valid
+def is_valid_activation_key(key):
+    if not os.path.exists(activation_keys_file):
+        return False
+    with open(activation_keys_file, "r
